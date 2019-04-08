@@ -4,9 +4,9 @@
 
 ### Problem
 
-![2.3-1](.\img\2.3-1.jpg)
+![2.3-1](./img/2.3-1.jpg)
 
-![2.3-2](.\img\2.3-2.jpg)
+![2.3-2](./img/2.3-2.jpg)
 
 ### Answer
 
@@ -20,11 +20,11 @@ c) Assuming that the cache can store four lines and MAX = 8, the first pair of n
 
 ### Problem
 
-![2.10](.\img\2.10.jpg)
+![2.10](./img/2.10.jpg)
 
 ### Answer
 
-If we use 1000 processors to execute the task, each processor will execute $\frac{10^{12}}{10^3} = 10^9$ instructions during $10^9 / 10^6 = 10^3$ seconds. Define the time to send message is t, for each processor the overhead will be $999 * 10^9 * t$ (Suppose there is no other overhead).
+If we use 1000 processors to execute the task, each processor will execute $/frac{10^{12}}{10^3} = 10^9$ instructions during $10^9 / 10^6 = 10^3$ seconds. Define the time to send message is t, for each processor the overhead will be $999 * 10^9 * t$ (Suppose there is no other overhead).
 
 a) The time of each processor will be $10^3 + 999 = 1999$ seconds.
 
@@ -34,7 +34,7 @@ b) The time will be $10^3 + 999 * 10^6 = 999001000$ seconds.
 
 ### Problem
 
-![2.15](.\img\2.15.jpg)
+![2.15](./img/2.15.jpg)
 
 ### Answer
 
@@ -48,7 +48,7 @@ c) In the first part, all cores will be informed when the variable updated. It's
 
 ### Problem
 
-![2.16](.\img\2.16.jpg)
+![2.16](./img/2.16.jpg)
 
 ### Answer
 
@@ -97,9 +97,9 @@ plt.show()
 
 ```
 
-![increase n](.\img\increase n.png)
+![increase n](./img/increase n.png)
 
-![increase p](.\img\increase p.png)
+![increase p](./img/increase p.png)
 
 a) When n is fixed and p increases, the serial execution time is kept constant and the parallel execution time decreases more rapidly when the value of n is greater than p. When p is held fixed and n increases, the serial execution time grows and the parallel execution time increases.
 
@@ -109,9 +109,9 @@ b) If we check the efficiency function, at the time that $T_{overhead}$ grows mo
 
 ### Problem
 
-![2.22-1](.\img\2.22-1.jpg)
+![2.22-1](./img/2.22-1.jpg)
 
-![2.22-2](.\img\2.22-2.jpg)
+![2.22-2](./img/2.22-2.jpg)
 
 ### Answer
 

@@ -4,7 +4,7 @@
 
 ### Problem
 
-![1.4](.\img\1.4.jpg)
+![1.4](./img/1.4.jpg)
 
 ### Answer
 
@@ -31,9 +31,9 @@ while (bitmask < total_cores){
 
 ### Problem
 
-![1.6-1](.\img\1.6-1.jpg)
+![1.6-1](./img/1.6-1.jpg)
 
-![1.6-2](.\img\1.6-2.jpg)
+![1.6-2](./img/1.6-2.jpg)
 
 ### Answer
 
