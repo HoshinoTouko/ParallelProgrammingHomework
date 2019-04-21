@@ -1,13 +1,12 @@
 /*
  * Purpose:
- *      Serial summation.
+ *      Serial prefix summation.
  * Compile:
  *      g++ 1.2.1.cpp
  * Execute:
  *      ./a.out
  */
 #include<cstdio>
-#include<ctime>
 #include<iostream>
 
 #define VECTOR_SIZE 1000
@@ -22,12 +21,15 @@ void generate_vector(int vector[]){
 }
 
 int main(){
-    int sum = 0;
+    int prefix_sum = 0;
     int vector[VECTOR_SIZE];
     generate_vector(vector);
+
     for(int i = 0; i < VECTOR_SIZE; i++){
-        sum += vector[i];
+        for(int j = 0; j < i + 1; j++){
+            prefix_sum += vector[j];
+        }
     }
-    std::cout<<sum<<std::endl;
+    std::cout<<"Prefix sum: "<<prefix_sum<<std::endl;
     return 0;
 }
