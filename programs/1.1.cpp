@@ -6,7 +6,7 @@
  *      mpic++ 1.1.cpp
  * 
  * Execute: 
- *      mpirun mpirun -n 32 ./a.out
+ *      mpirun -n 32 ./a.out
  */
 #include <cstdio>
 #include <iostream>
