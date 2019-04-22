@@ -6,13 +6,14 @@
  *      mpic++ 1.2.2.cpp
  * Execute:
  *      mpirun -n 50 ./a.out
+ *      # Note that the number of process must be evenly divisible by VECTOR_SIZE.
  */
 #include<cstdio>
 #include<cstdlib>
 #include<iostream>
-#include <mpi.h>
+#include<mpi.h>
 
-#define VECTOR_SIZE 100
+#define VECTOR_SIZE 1000
 
 int rank, size;
 MPI_Comm mpi_comm = MPI_COMM_WORLD;
@@ -36,7 +37,35 @@ void generate_vector(int vector[], int loc_n){
    }
 }
 
-void print_vector(int vector[], int vec_size){
+void calculate_vector(int loc_n, int loc_vector_storage[], int loc_prefix_sums[]){
+    int passed_sum;
+    int dest, src;
+
+    // Compute self task
+    loc_prefix_sums[0] = loc_vector_storage[0];
+    for (int i = 1; i < loc_n; i++){
+        loc_prefix_sums[i] = loc_prefix_sums[i - 1] + loc_vector_storage[i];
+    }
+
+    src = rank - 1;
+    dest = rank + 1;
+
+    if (rank != 0) {
+        // Receive 
+        MPI_Recv(&passed_sum, 1, MPI_INT, src, 0, mpi_comm, MPI_STATUS_IGNORE);
+
+        // Calculate
+        for (int i = 0; i < loc_n; i++)
+            loc_prefix_sums[i] += passed_sum;
+   }
+
+   if (rank != size - 1) {
+      MPI_Send(&loc_prefix_sums[loc_n-1], 1, MPI_INT, dest, 0, mpi_comm);
+   }
+}
+
+void print_vector(std::string title, int vector[], int vec_size){
+    std::cout<<title<<std::endl;
     std::cout<<"Greeting from rank: "<<rank<<"[";
     for(int i = 0; i < vec_size; i++){
         std::cout<<vector[i]<<", ";
@@ -60,7 +89,10 @@ int main(int argc, char* argv[]){
 
     generate_vector(loc_vector_storage, loc_n);
 
-    print_vector(loc_vector_storage, loc_n);
+    calculate_vector(loc_n, loc_vector_storage, loc_prefix_sums);
+
+    // print_vector("loc_vector_storage", loc_vector_storage, loc_n);
+    print_vector("loc_vector_storage", loc_prefix_sums, loc_n);
 
     MPI_Finalize();
     return 0;
