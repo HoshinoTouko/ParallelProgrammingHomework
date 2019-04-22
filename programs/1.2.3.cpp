@@ -1,19 +1,21 @@
 /*
  * Purpose:
- *      Parallelize 1.2.1 serial program designed on a system with n processes, 
- *      with each process storing an (x) value.
+ *      Parallelize 1.2.1 serial program designed on a system with n processes.
+ *      Let n = 2^k and k be a positive integer. Design a parallel algorithm that 
+ *      makes this parallel algorithm only require k communication stages
  * Compile:
- *      mpic++ 1.2.2.cpp
+ *      mpic++ 1.2.3.cpp
  * Execute:
- *      mpirun -n 50 ./a.out
- *      # Note that the number of process must be evenly divisible by VECTOR_SIZE.
+ *      mpirun -n 32 ./a.out
+ *      # Note that the number of process must be evenly divisible by VECTOR_SIZE and 
+ *      n is the power of 2 m.
  */
 #include<cstdio>
 #include<cstdlib>
 #include<iostream>
 #include<mpi.h>
 
-#define VECTOR_SIZE 1000
+#define VECTOR_SIZE 3200
 
 int rank, size;
 MPI_Comm mpi_comm = MPI_COMM_WORLD;
@@ -39,7 +41,7 @@ void generate_vector(int vector[], int loc_n){
 
 void calculate_vector(int loc_n, int loc_vector_storage[], int loc_prefix_sums[]){
     int passed_sum;
-    int dest, src;
+    int mask, sum, partner, tmp;
 
     // Compute self task
     loc_prefix_sums[0] = loc_vector_storage[0];
@@ -47,21 +49,20 @@ void calculate_vector(int loc_n, int loc_vector_storage[], int loc_prefix_sums[]
         loc_prefix_sums[i] = loc_prefix_sums[i - 1] + loc_vector_storage[i];
     }
 
-    src = rank - 1;
-    dest = rank + 1;
-
-    if (rank != 0) {
-        // Receive 
-        MPI_Recv(&passed_sum, 1, MPI_INT, src, 0, mpi_comm, MPI_STATUS_IGNORE);
-
-        // Calculate
-        for (int i = 0; i < loc_n; i++)
-            loc_prefix_sums[i] += passed_sum;
-   }
-
-   if (rank != size - 1) {
-      MPI_Send(&loc_prefix_sums[loc_n-1], 1, MPI_INT, dest, 0, mpi_comm);
-   }
+    /* Now use butterfly structured communications */
+    sum = loc_prefix_sums[loc_n-1];
+    mask = 1;
+    while (mask < size) {
+        partner = rank ^ mask;
+        MPI_Sendrecv(&sum, 1, MPI_DOUBLE, partner, 0,
+                &tmp, 1, MPI_DOUBLE, partner, 0,
+                mpi_comm, MPI_STATUS_IGNORE);
+        sum += tmp;
+        if (rank > partner) 
+            for (int i = 0; i < loc_n; i++)
+                loc_prefix_sums[i] += tmp;
+        mask <<= 1;
+    }
 }
 
 void print_vector(std::string title, int vector[], int vec_size){
