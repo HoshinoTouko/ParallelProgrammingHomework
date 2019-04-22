@@ -94,6 +94,9 @@ int main(int argc, char* argv[]){
     // print_vector("loc_vector_storage", loc_vector_storage, loc_n);
     print_vector("loc_vector_storage", loc_prefix_sums, loc_n);
 
+    free(loc_vector_storage);
+    free(loc_prefix_sums);
+
     MPI_Finalize();
     return 0;
 }
