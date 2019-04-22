@@ -49,7 +49,7 @@ void calculate_vector(int loc_n, int loc_vector_storage[], int loc_prefix_sums[]
         loc_prefix_sums[i] = loc_prefix_sums[i - 1] + loc_vector_storage[i];
     }
 
-    /* Now use butterfly structured communications */
+    // Butterfly structured communications
     sum = loc_prefix_sums[loc_n-1];
     mask = 1;
     while (mask < size) {
