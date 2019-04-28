@@ -1,5 +1,9 @@
+# Ref
+ref/
+
 # C / C++ compile files
 *.out
+*.exe
 
 # IDE
 .vscode/
