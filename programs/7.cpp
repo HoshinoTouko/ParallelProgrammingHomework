@@ -1,9 +1,9 @@
 #include <iostream>
+#include <cstdio>
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <pthread.h>
-#include <time.h>
+#include <ctime>
 
 const int thread_count = 4;
 const int matrix_column = 30000;
