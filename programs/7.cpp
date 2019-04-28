@@ -81,6 +81,42 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+
+void *Pth_mat_vect_shared(void* rank) {
+    long my_rank = (intptr_t) rank;
+    int local_m = m / thread_count;
+    int my_first_row = my_rank * local_m;
+    int my_last_row = (my_rank + 1) * local_m;
+
+    for (int i = my_first_row; i < my_last_row; i++) {
+        y[i + (my_rank * 8)] = 0.0;
+        for (int j = 0; j < n; j++)
+            y[i + (my_rank * 8)] += A[i * n + j] * x[j];
+    }
+
+    return NULL;
+}
+
+
+void *Pth_mat_vect_local(void* rank) {
+    long my_rank = (intptr_t) rank;
+    int local_m = m / thread_count;
+    register int sub = my_rank * local_m * n;
+    int my_first_row = my_rank * local_m;
+    int my_last_row = (my_rank + 1) * local_m;
+    double tmp_y;
+
+    for (int i = my_first_row; i < my_last_row; i++) {
+        tmp_y = 0.0;
+        for (int j = 0; j < n; j++)
+            tmp_y += A[sub++] * x[j];
+        y[i] = tmp_y;
+    }
+
+    return NULL;
+}
+ 
+
 void Usage (char* prog_name) {
     fprintf(stderr, "usage: %s <thread_count>\n", prog_name);
     exit(0);
@@ -118,42 +154,6 @@ void Gen_vector(double x[], int n) {
     int i;
     for (i = 0; i < n; i++)
         x[i] = rand()/((double) RAND_MAX);
-}
-
-
-void *Pth_mat_vect_shared(void* rank) {
-    long my_rank = (intptr_t) rank;
-    int i, j;
-    int local_m = m/thread_count;
-    int my_first_row = my_rank*local_m;
-    int my_last_row = (my_rank+1)*local_m - 1;
-
-    for (i = my_first_row; i <= my_last_row; i++) {
-        y[i+(my_rank*8)] = 0.0;
-        for (j = 0; j < n; j++)
-            y[i+(my_rank*8)] += A[i*n+j]*x[j];
-    }
-
-    return NULL;
-}
-
-void *Pth_mat_vect_local(void* rank) {
-    long my_rank = (intptr_t) rank;
-    int i, j;
-    int local_m = m/thread_count;
-    register int sub = my_rank*local_m*n;
-    int my_first_row = my_rank*local_m;
-    int my_last_row = (my_rank+1)*local_m - 1;
-    double tmp;
-
-    for (i = my_first_row; i <= my_last_row; i++) {
-        tmp = 0.0;
-        for (j = 0; j < n; j++)
-            tmp += A[sub++]*x[j];
-        y[i] = tmp;
-    }
-
-    return NULL;
 }
 
 
