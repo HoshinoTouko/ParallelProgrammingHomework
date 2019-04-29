@@ -9,7 +9,7 @@
 
 const int thread_count = 8;
 
-double  a, b, h;
+double  a, b, dx;
 int     n, local_n;
 int	method;
 
@@ -21,7 +21,7 @@ double  res;
 
 void *Thread_work(void* rank);
 double Trap(double local_a, double local_b, int local_n,
-            double h);    /* Calculate local integral  */
+            double dx);    /* Calculate local integral  */
 double f(double x); /* function we're integrating */
 
 
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     std::cout<<"Input a, b, n\n"<<std::endl;
     std::cin>>a>>b>>n;
     
-    h = (b - a) / n;
+    dx = (b - a) / n;
 
     local_n = n / thread_count;
 
@@ -81,10 +81,10 @@ void *Thread_work(void* rank) {
     long        my_rank = (intptr_t) rank;
 
 
-    local_a = a + my_rank * local_n * h;
-    local_b = local_a + local_n * h;
+    local_a = a + my_rank * local_n * dx;
+    local_b = local_a + local_n * dx;
 
-    my_int = Trap(local_a, local_b, local_n, h);
+    my_int = Trap(local_a, local_b, local_n, dx);
 
     switch (method) {
         case 0: // Mutex
