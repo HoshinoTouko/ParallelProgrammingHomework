@@ -6,8 +6,8 @@
 #include <ctime>
 
 const int thread_count = 4;
-const int matrix_column = 30000;
-const int matrix_row = 30000;
+const int matrix_column = 10000;
+const int matrix_row = 10000;
 
 int     m, n;
 double* A;
