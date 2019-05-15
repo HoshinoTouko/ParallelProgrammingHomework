@@ -1,6 +1,6 @@
 /*
  * Purpose:
- *      Get a matrix from user's input and output the up&right of the matrix.
+ *      Get a matrix from user's input and output the up & right of the matrix.
  *
  * Compile:
  *      mpic++ 3.cpp
