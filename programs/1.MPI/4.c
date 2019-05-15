@@ -1,6 +1,4 @@
 /*
- * File:     prog3.5_mpi_mat_vect_col.c
- *
  * Purpose:  Implement matrix vector multiplication when the matrix
  *           has a block column distribution
  *
