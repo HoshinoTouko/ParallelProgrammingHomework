@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
 
     thread_handles = (pthread_t*)malloc (thread_count*sizeof(pthread_t));
 
-    flag = 0; // semaphore
+    flag = 0; // busy-wait
     pthread_mutex_init(&mutex, NULL); // mutex
-    sem_init(&sem, 0, 1); // busy-wait
+    sem_init(&sem, 0, 1); // semaphore
 
     
     std::cout<<"Standard "<<(b * b * b - a * a * a) / 3<<std::endl;
