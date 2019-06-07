@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
   double a = 1.0;
   double b = 2.0;
-  int n = 3200;
+  int n = 32000;
 
   double start, end;
 
