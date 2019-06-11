@@ -20,7 +20,7 @@ double Trap(double a, double b, double local_n) {
     local_a = a + my_rank * local_n * dx;
     local_b = local_a + local_n * dx;
     my_result = (f(local_a) + f(local_b)) / 2.0;
-    for (int i = 0; i < local_n; i++) {
+    for (int i = 1; i < local_n; i++) {
         x = local_a + i * dx;
         my_result += f(x);
     }

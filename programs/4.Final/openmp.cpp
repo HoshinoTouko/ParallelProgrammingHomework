@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
     start = clock();
     # pragma omp parallel num_threads(thread_count)
     Trap(a, b, n, &global_result);
+    end = clock();
 
     std::cout<<std::endl;
     std::cout<<"Thread count: "<<thread_count<<std::endl;
@@ -45,7 +46,7 @@ void Trap(double a, double b, int n, double* global_result_p) {
     local_a = a + my_rank * local_n * dx;
     local_b = local_a + local_n * dx;
     my_result = (f(local_a) + f(local_b)) / 2.0;
-    for (int i = 0; i < local_n; i++) {
+    for (int i = 1; i < local_n; i++) {
         x = local_a + i * dx;
         my_result += f(x);
     }
