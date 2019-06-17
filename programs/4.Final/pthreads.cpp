@@ -7,10 +7,10 @@
 #include <time.h>
 
 
-const int thread_count = 8;
+const int thread_count = 16;
 
 double  a, b, dx;
-int     n, local_n;
+int     n, n0, local_n;
 
 pthread_mutex_t mutex;
 double  res;
@@ -28,11 +28,7 @@ int main(int argc, char** argv) {
     res = 0.0;
 
     std::cout<<"Input a, b, n\n"<<std::endl;
-    std::cin>>a>>b>>n;
-
-    dx = (b - a) / n;
-
-    local_n = n / thread_count;
+    std::cin>>a>>b>>n0;
 
     thread_handles = (pthread_t*)malloc (thread_count*sizeof(pthread_t));
 
@@ -41,25 +37,32 @@ int main(int argc, char** argv) {
 
     std::cout<<"Standard "<<(b * b * b - a * a * a) / 3<<std::endl;
 
-    res = 0.0;
-    start = clock();
+    for (int rate = 1; rate < 100; rate++) {
+        n = n0 * rate;
+        dx = (b - a) / n;
+        local_n = n / thread_count;
     
-    /* Start the threads. */
-    for (long thread = 0; thread < thread_count; thread++) {
-        pthread_create(&thread_handles[thread], NULL, Thread_work,
-                       (void*) thread);
+        res = 0.0;
+        start = clock();
+
+        /* Start the threads. */
+        for (long thread = 0; thread < thread_count; thread++) {
+            pthread_create(&thread_handles[thread], NULL, Thread_work,
+                           (void*) thread);
+        }
+
+        /* Wait for threads to complete. */
+        for (long thread = 0; thread < thread_count; thread++) {
+            pthread_join(thread_handles[thread], NULL);
+        }
+        end = clock();
+
+//        std::cout<<std::endl;
+//        std::cout<<"Method: mutex. Thread count: "<<thread_count<<std::endl;
+//        std::cout<<"CPU Time: "<<end - start<<". Result: "<<res<<std::endl;
+        std::cout<<n<<" "<<end - start<<std::endl;
     }
 
-    /* Wait for threads to complete. */
-    for (long thread = 0; thread < thread_count; thread++) {
-        pthread_join(thread_handles[thread], NULL);
-    }
-    end = clock();
-
-    std::cout<<std::endl;
-    std::cout<<"Method: mutex. Thread count: "<<thread_count<<std::endl;
-    std::cout<<"CPU Time: "<<end - start<<". Result: "<<res<<std::endl;
-     
     pthread_mutex_destroy(&mutex);
     free(thread_handles);
 

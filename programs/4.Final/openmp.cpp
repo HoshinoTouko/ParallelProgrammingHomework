@@ -7,30 +7,37 @@
 void Trap(double a, double b, int n, double* global_result_p);
 double f(double x);
 
-int thread_count = 8;
+int thread_count = 16;
 double dx;
 
 int main(int argc, char *argv[]) {
     double global_result = 0.0;
     int start, end;
     double a, b;
-    int n;
+    int n, n0;
 
     std::cout<<"Input a, b, n\n"<<std::endl;
-    std::cin>>a>>b>>n;
+    std::cin>>a>>b>>n0;
 
     std::cout<<"Standard "<<(b * b * b - a * a * a) / 3<<std::endl;
+    
+    for (int rate = 1; rate < 100; rate++) {
+        global_result = 0.0;
+        n = n0 * rate;
+        dx = (b - a) / n;
+        
+        start = clock();
+        # pragma omp parallel num_threads(thread_count)
+        Trap(a, b, n, &global_result);
+        end = clock();
+        
+        # pragma omp critical
+        std::cout<<n<<" "<<end - start<<std::endl;
+    }
 
-    dx = (b - a) / n;
-
-    start = clock();
-    # pragma omp parallel num_threads(thread_count)
-    Trap(a, b, n, &global_result);
-    end = clock();
-
-    std::cout<<std::endl;
-    std::cout<<"Thread count: "<<thread_count<<std::endl;
-    std::cout<<"CPU Time: "<<end - start<<". Result: "<<global_result<<std::endl;
+//    std::cout<<std::endl;
+//    std::cout<<"Thread count: "<<thread_count<<std::endl;
+//    std::cout<<"CPU Time: "<<end - start<<". Result: "<<global_result<<std::endl;
 
     return 0;
 }
